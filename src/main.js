@@ -21,9 +21,21 @@ var DueDateCalculator = /** @class */ (function () {
             throw new Error(this.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS);
         }
         var dueDate = submitDate;
-        dueDate.setHours(dueDate.getHours() + turnAround);
-        // dueDate = add turnAround hours to submitDate
-        // if dueDate is past 5pm, add 16 hours
+        if (turnAround >= 8) {
+            var fullDays = Math.floor(turnAround / 8);
+            var remaining = turnAround % 8;
+            // add full days every 8 hours
+            dueDate.setHours(dueDate.getHours() + 24 * fullDays);
+            // add remaining hours
+            dueDate.setHours(dueDate.getHours() + remaining);
+        }
+        if (turnAround < 8) {
+            dueDate.setHours(dueDate.getHours() + turnAround);
+        }
+        // go to next day if time has passed 17
+        if (dueDate.getHours() >= 17) {
+            dueDate.setHours(dueDate.getHours() + 16);
+        }
         return dueDate;
     };
     return DueDateCalculator;
