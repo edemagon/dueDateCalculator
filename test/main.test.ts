@@ -8,6 +8,20 @@ describe('DueDateCalculator', () => {
     dueDateCalculator = new DueDateCalculator();
   })
 
+  test.only('should return an error if turnAround time is negative', () => {
+    let submitDateTuesday = new Date(2024, 9, 8, 11, 12);
+    expect(() => {
+      dueDateCalculator.calculateDueDateTime(submitDateTuesday, -4);
+    }).toThrow(dueDateCalculator.ERROR_SUBMITTING_NEGATIVE_NULL_TURNAROUND);
+  });
+
+  test.only('should return an error if turnAround time is null', () => {
+    let submitDateTuesday = new Date(2024, 9, 8, 11, 12);
+    expect(() => {
+      dueDateCalculator.calculateDueDateTime(submitDateTuesday, 0);
+    }).toThrow(dueDateCalculator.ERROR_SUBMITTING_NEGATIVE_NULL_TURNAROUND);
+  });
+
   test.only('should return an error if submit date is outside working days', () => {
     let submitDateSaturday = new Date(2024, 10, 9, 11, 12);
     expect(() => {
@@ -47,7 +61,7 @@ describe('DueDateCalculator', () => {
     expect(dueDateCalculator.calculateDueDateTime(submitDateTuesday, 16)).toBe(dueDateThursday);
   });
 
-  test('should be able to return a due time within the same day', () => {
+  test.only('should be able to return a due time within the same day', () => {
     let submitDateTuesday = new Date(2024, 9, 8, 11, 12);
     let dueDateTuesday = new Date(2024, 9, 8, 14, 12);
     expect(dueDateCalculator.calculateDueDateTime(submitDateTuesday, 3)).toBe(dueDateTuesday);

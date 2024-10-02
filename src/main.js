@@ -5,11 +5,15 @@ var DueDateCalculator = /** @class */ (function () {
     function DueDateCalculator() {
         this.ERROR_SUBMITTING_OUTSIDE_WORKING_DAYS = 'Please report your issue between Monday and Friday';
         this.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS = 'Please report your issue between 9AM and 5PM';
+        this.ERROR_SUBMITTING_NEGATIVE_NULL_TURNAROUND = 'Please use a positive turnaround time';
         this.nonWorkingDays = [0, 6];
         this.workingHoursStart = 9;
         this.workingHoursEnd = 17;
     }
     DueDateCalculator.prototype.calculateDueDateTime = function (submitDate, turnAround) {
+        if (turnAround <= 0) {
+            throw new Error(this.ERROR_SUBMITTING_NEGATIVE_NULL_TURNAROUND);
+        }
         if (this.nonWorkingDays.includes(submitDate.getDay())) {
             throw new Error(this.ERROR_SUBMITTING_OUTSIDE_WORKING_DAYS);
         }
@@ -17,6 +21,7 @@ var DueDateCalculator = /** @class */ (function () {
             throw new Error(this.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS);
         }
         var dueDate = submitDate;
+        dueDate.setHours(dueDate.getHours() + turnAround);
         // dueDate = add turnAround hours to submitDate
         // if dueDate is past 5pm, add 16 hours
         return dueDate;
