@@ -41,4 +41,10 @@ describe('DueDateCalculator', () => {
     let dueDateTuesday = new Date(2024, 9, 15, 11, 12);
     expect(dueDateCalculator.calculateDueDateTime(submitDateFriday, 16)).toBe(dueDateTuesday);
   });
+
+  test('should calculate due date with turnaround time longer than a week', () => {
+    let submitDateMonday = new Date(2024, 9, 21, 11, 20);
+    let dueDateFridayNextWeek = new Date(2024, 10, 1, 12, 20);
+    expect(dueDateCalculator.calculateDueDateTime(submitDateMonday, 73)).toBe(dueDateFridayNextWeek);
+  });
 })
