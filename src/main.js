@@ -7,8 +7,10 @@ var DueDateCalculator = /** @class */ (function () {
         this.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS = 'Please report your issue between 9AM and 5PM';
         this.ERROR_SUBMITTING_NEGATIVE_NULL_TURNAROUND = 'Please use a positive turnaround time';
         this.nonWorkingDays = [0, 6];
-        this.workingHoursStart = 9;
-        this.workingHoursEnd = 17;
+        this.WorkHoursStart = 9;
+        this.WorkHoursEnd = 17;
+        this.weekWorkHours = 40;
+        this.dayWorkHours = 8;
     }
     DueDateCalculator.prototype.calculateDueDateTime = function (submitDate, turnAround) {
         if (turnAround <= 0) {
@@ -17,24 +19,23 @@ var DueDateCalculator = /** @class */ (function () {
         if (this.nonWorkingDays.includes(submitDate.getDay())) {
             throw new Error(this.ERROR_SUBMITTING_OUTSIDE_WORKING_DAYS);
         }
-        if (submitDate.getHours() < this.workingHoursStart || submitDate.getHours() >= this.workingHoursEnd) {
+        if (submitDate.getHours() < this.WorkHoursStart || submitDate.getHours() >= this.WorkHoursEnd) {
             throw new Error(this.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS);
         }
-        var dueDate = submitDate;
-        if (turnAround >= 8) {
-            var fullDays = Math.floor(turnAround / 8);
-            var remaining = turnAround % 8;
-            // add full days every 8 hours
-            dueDate.setHours(dueDate.getHours() + 24 * fullDays);
-            // add remaining hours
-            dueDate.setHours(dueDate.getHours() + remaining);
-        }
-        if (turnAround < 8) {
-            dueDate.setHours(dueDate.getHours() + turnAround);
-        }
-        // go to next day if time has passed 17
+        var dueDate = new Date(submitDate);
+        var remainingWorkHours = turnAround;
+        var fullWeeks = Math.floor(turnAround / this.weekWorkHours);
+        remainingWorkHours = turnAround % this.weekWorkHours;
+        dueDate.setDate(dueDate.getDate() + 7 * fullWeeks);
+        var fullDays = Math.floor(remainingWorkHours / this.dayWorkHours);
+        remainingWorkHours = remainingWorkHours % this.dayWorkHours;
+        dueDate.setDate(dueDate.getDate() + 1 * fullDays);
+        dueDate.setHours(dueDate.getHours() + remainingWorkHours);
         if (dueDate.getHours() >= 17) {
             dueDate.setHours(dueDate.getHours() + 16);
+        }
+        if (dueDate.getDay() == 6 || (dueDate.getDay() < submitDate.getDay()) || ((dueDate.getDay() == submitDate.getDay()) && (dueDate.getHours() < submitDate.getHours()))) {
+            dueDate.setDate(dueDate.getDate() + 2);
         }
         return dueDate;
     };

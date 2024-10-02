@@ -73,10 +73,16 @@ describe('DueDateCalculator', () => {
     expect(dueDateCalculator.calculateDueDateTime(submitDateTuesday, 3).getTime()).toBe(dueDateTuesday.getTime());
   });
 
-  test('should calculate due date considering working hours and non working days', () => {
+  test('should calculate due date considering working hours and non working days - turnaround bellow 8', () => {
     let submitDateFriday = new Date(2024, 9, 11, 11, 12);
     let dueDateTuesday = new Date(2024, 9, 15, 11, 12);
     expect(dueDateCalculator.calculateDueDateTime(submitDateFriday, 16).getTime()).toBe(dueDateTuesday.getTime());
+  });
+
+  test('should calculate due date considering working hours and non working days - turnaround higher than 8', () => {
+    let submitDateFriday = new Date(2024, 9, 11, 16, 30);
+    let dueDateMonday = new Date(2024, 9, 14, 11, 30);
+    expect(dueDateCalculator.calculateDueDateTime(submitDateFriday, 3).getTime()).toBe(dueDateMonday.getTime());
   });
 
   test('should calculate due date with turnaround time longer than a week', () => {
