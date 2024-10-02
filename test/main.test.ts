@@ -8,26 +8,28 @@ describe('DueDateCalculator', () => {
     dueDateCalculator = new DueDateCalculator();
   })
 
-  test('should return an error if submit date is outside working days', () => {
+  test.only('should return an error if submit date is outside working days', () => {
     let submitDateSaturday = new Date(2024, 10, 9, 11, 12);
     expect(() => {
       dueDateCalculator.calculateDueDateTime(submitDateSaturday, 4);
     }).toThrow(dueDateCalculator.ERROR_SUBMITTING_OUTSIDE_WORKING_DAYS);
   });
 
-  test('should return an error if submit date is outside working hours', () => {
+  test.only('should return an error if submit date is outside working hours', () => {
     let submitDateThursday = new Date(2024, 9, 24, 7, 30);
     expect(() => {
       dueDateCalculator.calculateDueDateTime(submitDateThursday, 5);
     }).toThrow(dueDateCalculator.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS);
   });
 
-  test('should return an error if submit date 5pm', () => {
+  test.only('should return an error if submit date 5pm', () => {
     let submitDateThursday = new Date(2024, 9, 24, 17, 0);
-    expect(dueDateCalculator.calculateDueDateTime(submitDateThursday, 5)).toThrow(dueDateCalculator.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS);
+    expect(() => {
+      dueDateCalculator.calculateDueDateTime(submitDateThursday, 5);
+    }).toThrow(dueDateCalculator.ERROR_SUBMITTING_OUTSIDE_WORKING_HOURS);
   });
 
-  test('should return a due date if submit date is 9am', () => {
+  test.only('should return a due date if submit date is 9am', () => {
     let submitDateThursday = new Date(2024, 9, 24, 9, 0);
     let dueDateThursday = new Date(2024, 9, 24, 11, 0);
     expect(dueDateCalculator.calculateDueDateTime(submitDateThursday, 2)).toBe(dueDateThursday);
